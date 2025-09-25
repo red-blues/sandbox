@@ -15,18 +15,30 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Setup Unity
-      uses: game-ci/unity-builder@v3
+    # 2️⃣ Активируем лицензию Unity Personal
+    - name: Activate Unity License
+      uses: game-ci/unity-activate@v2
       with:
-        unityVersion: 6000.0.44f1  # укажи свою версию Unity
+        unityVersion: 6000.0.44f1
+        personal: true
+        unityLicense: ${{ secrets.UNITY_LICENSE }}
 
+    # 3️⃣ Кэшируем папку Library для ускорения последующих сборок
+    - name: Cache Library
+      uses: actions/cache@v3
+      with:
+        path: Test git project/Library
+        key: ${{ runner.os }}-unity-${{ hashFiles('Test git project/Assets/**/*') }}
+
+    # 4️⃣ Сборка WebGL
     - name: Build WebGL
       uses: game-ci/unity-builder@v3
       with:
+        projectPath: "Test git project"
         targetPlatform: WebGL
-        projectPath: "Test git project"  # путь к Unity проекту
-        buildPath: "Build/WebGL"         # итоговый билд относительно корня репозитория
+        buildPath: "Build/WebGL"
 
+    # 5️⃣ Публикация на GitHub Pages
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
