@@ -20,12 +20,21 @@ jobs:
         path: Test git project/Library
         key: ${{ runner.os }}-unity-${{ hashFiles('Test git project/Assets/**/*') }}
 
-    - name: Activate Unity (GameCI)
-        if: ${{ secrets.UNITY_LICENSE != '' }}
-        uses: game-ci/unity-activate@v2
-        with:
-          # пример: передадим содержимое .ulf в секрет UNITY_LICENSE
-          license: ${{ secrets.UNITY_LICENSE }}
+    - name: Request a Unity license file
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_TOTP_KEY: ${{ secrets.UNITY_TOTP_KEY }}
+        run: |
+          npm install
+          npm install -g .
+          unity-license-activate "$UNITY_EMAIL" "$UNITY_PASSWORD" Unity_v${{ matrix.unityVersion }}.alf --authenticator-key "$UNITY_TOTP_KEY"
+
+      - name: Activate License
+        run: |
+          unity-editor -quit -batchmode -nographics -logFile -manualLicenseFile $(ls Unity_*.ulf) || true
+          rm Unity_*.ulf
+          rm Unity_*.alf
 
     # 3️⃣ Сборка WebGL
     - name: Build WebGL
