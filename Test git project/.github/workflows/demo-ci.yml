@@ -1,26 +1,49 @@
-name: Build & Deploy WebGL
+name: Build and Deploy Unity WebGL
 
 on:
   push:
-    branches: [ "build" ]
+    branches:
+      - main  # или ваша ветка
 
 jobs:
   build:
+    name: Build WebGL
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Unity
+      uses: game-ci/unity-actions/setup@v2
+      with:
+        unityVersion: 6000.0.44f1  
+
+    - name: Build WebGL
+      uses: game-ci/unity-actions/build@v2
+      with:
+        targetPlatform: WebGL
+        buildPath: Build/WebGL
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: webgl-build
+        path: Build/WebGL
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      # 1️⃣ Клонируем репозиторий
-      - uses: actions/checkout@v4
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: webgl-build
+        path: Build/WebGL
 
-      # 2️⃣ Демонстрация запуска CI
-      - name: CI started
-        run: echo "CI started!"
-
-      # 3️⃣ Сборка Unity WebGL
-      - name: Build WebGL
-        uses: game-ci/unity-builder@v4
-        with:
-          targetPlatform: WebGL
-          unityVersion: auto
-          projectPath: ./Test git project  # <- корень Unity проекта
-          buildsPath: build
-          buildName: WebGLBuild
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: Build/WebGL
