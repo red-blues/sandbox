@@ -24,11 +24,12 @@ jobs:
     - name: Build WebGL
       uses: game-ci/unity-builder@v4
       with:
-        unityVersion: 6.0.44f1
+        unityVersion: auto
         projectPath: "Test git project"
         targetPlatform: WebGL
         buildsPath: "Build"
         buildName: "WebGL"
+        activateLicense: false
 
     # 4️⃣ Деплой на GitHub Pages
     - name: Deploy to GitHub Pages
