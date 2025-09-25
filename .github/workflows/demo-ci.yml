@@ -1,0 +1,17 @@
+﻿name: Demo CI — print message
+
+on:
+  push:
+    branches: [ "build" ]
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: CI started message
+        run: |
+          echo "CI started!"
+          echo "Показать студентам: это появится в логе шага 'CI started message'."
