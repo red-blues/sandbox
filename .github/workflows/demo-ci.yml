@@ -3,7 +3,7 @@ name: Build and Deploy Unity WebGL
 on:
   push:
     branches:
-      - build  # ветка с проектом Unity
+      - build  # ветка с Unity проектом
 
 jobs:
   build-deploy:
@@ -15,30 +15,24 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 2️⃣ Активируем лицензию Unity Personal
-    - name: Activate Unity License
-      uses: game-ci/unity-activate@v2
-      with:
-        unityVersion: 6000.0.44f1
-        personal: true
-        unityLicense: ${{ secrets.UNITY_LICENSE }}
-
-    # 3️⃣ Кэшируем папку Library для ускорения последующих сборок
+    # 2️⃣ Кэшируем Library для ускорения сборок
     - name: Cache Library
       uses: actions/cache@v3
       with:
         path: Test git project/Library
         key: ${{ runner.os }}-unity-${{ hashFiles('Test git project/Assets/**/*') }}
 
-    # 4️⃣ Сборка WebGL
+    # 3️⃣ Сборка WebGL с автоматической активацией Personal лицензии
     - name: Build WebGL
       uses: game-ci/unity-builder@v3
       with:
         projectPath: "Test git project"
         targetPlatform: WebGL
         buildPath: "Build/WebGL"
+        unityVersion: 6000.0.44f1
+        unityLicense: ${{ secrets.UNITY_LICENSE }}
 
-    # 5️⃣ Публикация на GitHub Pages
+    # 4️⃣ Публикация на GitHub Pages
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
