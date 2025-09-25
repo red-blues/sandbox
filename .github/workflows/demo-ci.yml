@@ -1,6 +1,5 @@
-name: Build & Deploy WebGL (Personal License)
+name: Build & Deploy WebGL
 
-# Запуск при пуше в ветку build
 on:
   push:
     branches: [ "build" ]
@@ -10,37 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # 1️⃣ Клонируем репозиторий
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 2️⃣ Показать, что CI стартовал
+      # 2️⃣ Демонстрация запуска CI
       - name: CI started
         run: echo "CI started!"
 
-      # 3️⃣ Собираем Unity WebGL (Personal License: activateLicense=false)
-      - name: Build WebGL with GameCI
+      # 3️⃣ Сборка Unity WebGL
+      - name: Build WebGL
         uses: game-ci/unity-builder@v4
         with:
           targetPlatform: WebGL
-          unityVersion: auto               # берётся из ProjectVersion.txt
-          buildsPath: build                # директория для сборок
-          buildName: WebGLBuild            # имя подпапки сборки
-          activateLicense: false           # для Personal License
-
-      # 4️⃣ Проверка файлов билда (опционально, для логов)
-      - name: List built files
-        run: ls -R build/WebGLBuild || true
-
-      # 5️⃣ Загружаем билд как артефакт для Pages
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/WebGLBuild
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      # 6️⃣ Деплой на GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+          unityVersion: auto
+          projectPath: ./  # <- корень Unity проекта
+          buildsPath: build
+          buildName: WebGLBuild
