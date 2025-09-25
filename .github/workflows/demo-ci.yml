@@ -3,7 +3,7 @@ name: Build and Deploy Unity WebGL
 on:
   push:
     branches:
-      - build  # твоя ветка с проектом
+      - build  # ветка с проектом Unity
 
 jobs:
   build-deploy:
@@ -15,20 +15,21 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Setup Unity
-      uses: game-ci/unity-actions/setup@v2
+      uses: game-ci/unity-actions/setup@v2.0.12
       with:
-        unityVersion: 6000.0.44f1  
+        unityVersion: 6000.4.44f1  # укажи свою версию Unity
+        activateLicense: false     # или true, если используешь лицензию
 
     - name: Build WebGL
-      uses: game-ci/unity-actions/build@v2
+      uses: game-ci/unity-actions/build@v2.0.3
       with:
         projectPath: "Test git project"  # путь к Unity проекту
         targetPlatform: WebGL
-        buildPath: "Build/WebGL"  # путь для итогового билда относительно корня репозитория
+        buildPath: "Build/WebGL"         # итоговый билд относительно корня репозитория
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_branch: build  # пушим в ту же ветку
-        publish_dir: Build/WebGL  # папка, где лежит index.html
+        publish_branch: build        # пушим в ту же ветку
+        publish_dir: Build/WebGL     # папка с index.html для Pages
