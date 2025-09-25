@@ -3,11 +3,11 @@ name: Build and Deploy Unity WebGL
 on:
   push:
     branches:
-      - main  # или ваша ветка
+      - build  # твоя ветка с проектом
 
 jobs:
-  build:
-    name: Build WebGL
+  build-deploy:
+    name: Build WebGL and Deploy to GitHub Pages
     runs-on: ubuntu-latest
 
     steps:
@@ -22,28 +22,13 @@ jobs:
     - name: Build WebGL
       uses: game-ci/unity-actions/build@v2
       with:
+        projectPath: "Test git project"  # путь к Unity проекту
         targetPlatform: WebGL
-        buildPath: Build/WebGL
-
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: webgl-build
-        path: Build/WebGL
-
-  deploy:
-    name: Deploy to GitHub Pages
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Download Build Artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: webgl-build
-        path: Build/WebGL
+        buildPath: "Build/WebGL"  # путь для итогового билда относительно корня репозитория
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: Build/WebGL
+        publish_branch: build  # пушим в ту же ветку
+        publish_dir: Build/WebGL  # папка, где лежит index.html
