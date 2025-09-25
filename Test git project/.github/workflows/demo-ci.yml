@@ -21,6 +21,6 @@ jobs:
         with:
           targetPlatform: WebGL
           unityVersion: auto
-          projectPath: ./  # <- корень Unity проекта
+          projectPath: ./Test git project  # <- корень Unity проекта
           buildsPath: build
           buildName: WebGLBuild
