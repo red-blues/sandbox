@@ -20,15 +20,12 @@ jobs:
         path: Test git project/Library
         key: ${{ runner.os }}-unity-${{ hashFiles('Test git project/Assets/**/*') }}
 
-    # --- Активируйте Unity (вариант: game-ci activation / manual ULF) ---
-    # Этот шаг нужен только если вы собираетесь реально запускать Editor.
-    # Инструкции по подготовке секретов и созданию .ulf см. в документации GameCI (ниже).
     - name: Activate Unity (GameCI)
         if: ${{ secrets.UNITY_LICENSE != '' }}
         uses: game-ci/unity-activate@v2
         with:
-             # пример: передадим содержимое .ulf в секрет UNITY_LICENSE
-             license: ${{ secrets.UNITY_LICENSE }}
+          # пример: передадим содержимое .ulf в секрет UNITY_LICENSE
+          license: ${{ secrets.UNITY_LICENSE }}
 
     # 3️⃣ Сборка WebGL
     - name: Build WebGL
