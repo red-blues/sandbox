@@ -11,20 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # 1️⃣ Клонируем репозиторий
     - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Setup Unity
-      uses: game-ci/unity-actions/setup@v3
+      uses: game-ci/unity-builder@v3
       with:
-        unityVersion: 6000.4.44f1  # укажи свою версию Unity
-        activateLicense: false     # или true, если используешь лицензию
+        unityVersion: 6000.0.44f1  # укажи свою версию Unity
 
     - name: Build WebGL
-      uses: game-ci/unity-actions/build@v3
+      uses: game-ci/unity-builder@v3
       with:
-        projectPath: "Test git project"  # путь к Unity проекту
         targetPlatform: WebGL
+        projectPath: "Test git project"  # путь к Unity проекту
         buildPath: "Build/WebGL"         # итоговый билд относительно корня репозитория
 
     - name: Deploy to GitHub Pages
